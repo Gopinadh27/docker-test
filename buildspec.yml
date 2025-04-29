@@ -20,6 +20,9 @@ phases:
   pre_build:
     commands:
       - echo "Logging into docker"
+      - echo ${DOCKER_REGISTRY_PASSWORD}
+      - echo ${DOCKER_REGISTRY_USERNAME}
+      - echo ${DOCKER_REGISTRY_URL}
       - echo ${DOCKER_REGISTRY_PASSWORD} | docker login -u ${DOCKER_REGISTRY_USERNAME} --password-stdin
 
   build:
