@@ -1,13 +1,10 @@
 version: 0.2
 
 env:
-  variables:
+  parameter-store:
     DOCKER_REGISTRY_URL: /spring-boot-docker-test/docker/docker_registry_url
     DOCKER_REGISTRY_USERNAME: /spring-boot-docker-test/docker/username
     DOCKER_REGISTRY_PASSWORD: /spring-boot-docker-test/docker/password
-
-  docker:
-    privileged: true
 
 phases:
   install:
