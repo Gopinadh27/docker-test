@@ -1,0 +1,38 @@
+version: 0.2
+
+env:
+  variables:
+    DOCKER_REGISTRY_URL: /spring-boot-docker-test/docker/docker_registry_url
+    DOCKER_REGISTRY_USERNAME: /spring-boot-docker-test/docker/username
+    DOCKER_REGISTRY_PASSWORD: /spring-boot-docker-test/docker/password
+
+  docker:
+    privileged: true
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+      docker: 20
+    commands:
+      - echo "Installing maven..."
+      - apt-get update && apt-get install -y maven
+
+  pre_build:
+    commands:
+      - echo "Logging into docker"
+      - echo ${DOCKER_REGISTRY_PASSWORD} | docker login -u ${DOCKER_REGISTRY_USERNAME} --password-stdin
+
+  build:
+    commands:
+      - echo "Building java application..."
+      - mvn clean package -DskipTests
+      - echo "Building docker image ..."
+      - docker build -t "${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_USERNAME}/docker-test:latest" .
+      - echo "Image built successfully"
+
+  post_build:
+    commands:
+      - echo "Pushing docker image to docker hub..."
+      - docker push "${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_USERNAME}/docker-test:latest"
+      - echo "Docker image pushed to docker hub..."
